@@ -1,5 +1,6 @@
 package com.zerobase.zerostore.controller;
 
+import com.zerobase.zerostore.dto.CommonResponse;
 import com.zerobase.zerostore.dto.UserRequestDto;
 import com.zerobase.zerostore.service.UserService;
 import jakarta.validation.Valid;
@@ -17,15 +18,25 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRequestDto userRequestDto) {
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto userRequestDto) {
         userService.registerUser(userRequestDto);
-        return ResponseEntity.ok("회원가입 성공");
+        CommonResponse<Object> response = CommonResponse.builder()
+                .message("회원가입 성공")
+                .status(200)
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/apply-partner")
-    public ResponseEntity<String> applyForPartner(@PathVariable Long id) {
+    public ResponseEntity<?> applyForPartner(@PathVariable Long id) {
         userService.applyForPartner(id);
-        return ResponseEntity.ok("파트너 신청 성공");
+
+        CommonResponse<Object> response = CommonResponse.builder()
+                .message("파트너 전환 성공")
+                .status(200)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }
 

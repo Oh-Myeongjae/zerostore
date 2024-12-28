@@ -2,7 +2,9 @@ package com.zerobase.zerostore.service;
 
 import com.zerobase.zerostore.domain.User;
 import com.zerobase.zerostore.dto.UserRequestDto;
+import com.zerobase.zerostore.exception.CustomException;
 import com.zerobase.zerostore.repository.UserRepository;
+import com.zerobase.zerostore.type.ErrorCode;
 import com.zerobase.zerostore.type.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,9 @@ public class UserService {
     }
 
     @Transactional
-    public User registerUser(UserRequestDto userRequestDto) {
+    public void registerUser(UserRequestDto userRequestDto) {
         if (userRepository.existsByPhoneNumber(userRequestDto.getPhoneNumber())) {
-            throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
+            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
 
         User user = User.builder()
@@ -31,14 +33,14 @@ public class UserService {
                 .password(passwordEncoder.encode(userRequestDto.getPassword()))// 비밀번호 암호화
                 .role(Role.USER)// 기본 역할 설정
                 .build();
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Transactional
-    public User applyForPartner(Long userId) {
+    public void applyForPartner(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
         user.changeRole();
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }
