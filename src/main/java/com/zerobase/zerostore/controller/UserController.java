@@ -7,6 +7,8 @@ import com.zerobase.zerostore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +51,12 @@ public class UserController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test(@AuthenticationPrincipal UserDetails userDetails){
+        System.out.println("userDetails.getUsername() = " + userDetails.getUsername());
+        return ResponseEntity.ok("성공");            
     }
 }
 
