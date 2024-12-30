@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public CommonResponse<Object> handleException(Exception e) {
+        log.error("서버오류 발생",e);
         return CommonResponse.builder()
                 .status(INTERNAL_SERVER_ERROR.getStatus())
                 .message(INTERNAL_SERVER_ERROR.getDescription())

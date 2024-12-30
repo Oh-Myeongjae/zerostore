@@ -1,4 +1,4 @@
-package com.zerobase.zerostore.config;
+package com.zerobase.zerostore.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
