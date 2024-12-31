@@ -28,7 +28,9 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return user.getPhoneNumber(); }
+    public String getUsername() {
+        return user.getPhoneNumber();
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -48,5 +50,9 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getUseNumber() {
+        return user.getPhoneNumber();
     }
 }

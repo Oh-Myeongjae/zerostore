@@ -7,15 +7,13 @@ import com.zerobase.zerostore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -23,40 +21,19 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto userRequestDto) {
         userService.registerUser(userRequestDto);
-        CommonResponse<Object> response = CommonResponse.builder()
-                .message("회원가입 성공")
-                .status(200)
-                .build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(CommonResponse.success("회원가입 성공"));
     }
 
     @PostMapping("/{id}/partner")
     public ResponseEntity<?> applyForPartner(@PathVariable Long id) {
         userService.applyForPartner(id);
-
-        CommonResponse<Object> response = CommonResponse.builder()
-                .message("파트너 전환 성공")
-                .status(200)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(CommonResponse.success("파트너 전환 성공"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
-        CommonResponse<Object> response = CommonResponse.builder()
-                .message("로그인 성공")
-                .status(200)
-                .data(userService.login(loginRequestDto))
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(CommonResponse.success("로그인 성공", userService.login(loginRequestDto)));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(@AuthenticationPrincipal UserDetails userDetails){
-        System.out.println("userDetails.getUsername() = " + userDetails.getUsername());
-        return ResponseEntity.ok("성공");            
-    }
 }
 
