@@ -18,7 +18,10 @@ public enum ErrorCode {
 
     RESERVATION_NOT_FOUND(400, "예약을 찾을 수 없습니다."),
     UNAUTHORIZED_ACTION(403, "권한이 없습니다."),
-    DUPLICATE_RESERVATION(409, "이미 동일한 시간에 예약이 존재합니다.");
+    DUPLICATE_RESERVATION(409, "이미 동일한 시간에 예약이 존재합니다."),
+
+    ACCESS_DENIED(403, "상점정보를 수정할 권한이 없습니다."),
+    INVALID_INPUT_VALUE(422, "예약한 시간 10분 전부터 사용할 수 있습니다");
 
     private final int status;
     private final String description;

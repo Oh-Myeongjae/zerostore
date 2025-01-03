@@ -1,5 +1,7 @@
 package com.zerobase.zerostore.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ReservationRequest {
-    private Long storeId; // 상점 ID
-    private LocalDateTime reservationTime; // 예약 시간 (정각 단위)
+    @NotNull(message = "상점 ID는 필수입니다.")
+    private Long storeId;
+
+    @NotNull(message = "예약 시간은 필수입니다.")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime reservationTime;
 }

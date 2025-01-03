@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class ReservationService {
                 .user(user)
                 .store(store)
                 .reservationTime(request.getReservationTime())
-                .status(ReservationStatus.PENDING)
+                .status(ReservationStatus.PENDING.getStatus())
                 .used(false)
                 .build();
 
@@ -71,7 +72,15 @@ public class ReservationService {
     }
 
     // 예약 목록 조회 (파트너)
-    public List<ReservationResponse> getReservationsByStore(Long storeId) {
+    public List<ReservationResponse> getReservationsByStore(Long storeId, User user) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(STORE_NOT_FOUND));
+
+        // 상점 소유자 검증
+        if (!store.getOwner().getId().equals(user.getId())) {
+            throw new CustomException(ACCESS_DENIED);
+        }
+
         return reservationRepository.findAllByStoreId(storeId).stream()
                 .map(reservation -> new ReservationResponse(
                         reservation.getId(),
@@ -85,18 +94,37 @@ public class ReservationService {
 
     // 예약 상태 변경
     @Transactional
-    public void updateReservationStatus(Long reservationId, ReservationStatus status) {
+    public void updateReservationStatus(Long reservationId, String status, User user) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new CustomException(RESERVATION_NOT_FOUND));
+
+        // 상점 소유자 검증
+        if (!reservation.getStore().getOwner().getId().equals(user.getId())) {
+            throw new CustomException(ACCESS_DENIED);
+        }
 
         reservation.setStatus(status);
     }
 
     // 예약 사용 처리
     @Transactional
-    public void markReservationAsUsed(Long reservationId) {
+    public void markReservationAsUsed(Long reservationId, User user) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new CustomException(RESERVATION_NOT_FOUND));
+
+        // 상점 소유자 검증
+        if (!reservation.getStore().getOwner().getId().equals(user.getId())) {
+            throw new CustomException(ACCESS_DENIED);
+        }
+
+        // 현재 시간과 예약 시간 비교
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime reservationTime = reservation.getReservationTime();
+
+        // 예약 시간이 현재 시간 기준 10분 전 이후인지 확인
+        if (now.isBefore(reservationTime.minusMinutes(10))) {
+            throw new CustomException(INVALID_INPUT_VALUE);
+        }
 
         reservation.setUsed(true);
     }

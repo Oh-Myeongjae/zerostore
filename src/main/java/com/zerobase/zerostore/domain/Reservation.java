@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -31,16 +32,15 @@ public class Reservation extends BaseEntity{
     @Column(nullable = false)
     private LocalDateTime reservationTime;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReservationStatus status; // PENDING, APPROVED, REJECTED
+    private String status;
 
     @Column(nullable = false)
     private boolean used;
 
     // 예약 상태 업데이트
-    public void setStatus(ReservationStatus status) {
-        if (this.status == ReservationStatus.APPROVED && status == ReservationStatus.PENDING) {
+    public void setStatus(String status) {
+        if (Objects.equals(this.status, ReservationStatus.APPROVED.getStatus()) && Objects.equals(status, ReservationStatus.PENDING.getStatus())) {
             throw new IllegalStateException("승인된 예약은 대기 상태로 변경할 수 없습니다.");
         }
         this.status = status;
@@ -48,7 +48,7 @@ public class Reservation extends BaseEntity{
 
     // 사용 처리 상태 업데이트
     public void setUsed(boolean used) {
-        if (used && this.status != ReservationStatus.APPROVED) {
+        if (used && !Objects.equals(this.status, ReservationStatus.APPROVED.getStatus())) {
             throw new IllegalStateException("승인된 예약만 사용 처리할 수 있습니다.");
         }
         if (this.used && used) {

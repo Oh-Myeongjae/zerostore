@@ -37,26 +37,31 @@ public class ReservationController {
         return ResponseEntity.ok(CommonResponseUtil.success("예약 목록 조회 성공", reservations));
     }
 
-    // 3. 특정 상점 예약 목록 조회 (파트너)
+    // 3. 파트너 예약 목록 조회
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<CommonResponseUtil<?>> getStoreReservations(@PathVariable Long storeId) {
-        List<ReservationResponse> reservations = reservationService.getReservationsByStore(storeId);
+    public ResponseEntity<CommonResponseUtil<?>> getStoreReservations(
+            @PathVariable Long storeId,
+            @AuthenticationPrincipal UserDetailsImpl user) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByStore(storeId, user.getUser());
         return ResponseEntity.ok(CommonResponseUtil.success("상점 예약 목록 조회 성공", reservations));
     }
 
-    // 4. 예약 상태 변경 (파트너)
-    @PatchMapping("/{reservationId}/status")
+    // 4. 예약 상태 변경
+    @PatchMapping("/{reservationId}")
     public ResponseEntity<CommonResponseUtil<?>> updateReservationStatus(
             @PathVariable Long reservationId,
-            @RequestParam ReservationStatus status) {
-        reservationService.updateReservationStatus(reservationId, status);
+            @RequestParam ReservationStatus status,
+            @AuthenticationPrincipal UserDetailsImpl user) {
+        reservationService.updateReservationStatus(reservationId, status.getStatus(), user.getUser());
         return ResponseEntity.ok(CommonResponseUtil.success("예약 상태 변경 성공"));
     }
 
     // 5. 예약 사용 처리
     @PatchMapping("/{reservationId}/used")
-    public ResponseEntity<CommonResponseUtil<?>> markReservationAsUsed(@PathVariable Long reservationId) {
-        reservationService.markReservationAsUsed(reservationId);
+    public ResponseEntity<CommonResponseUtil<?>> markReservationAsUsed(
+            @PathVariable Long reservationId,
+            @AuthenticationPrincipal UserDetailsImpl user) {
+        reservationService.markReservationAsUsed(reservationId, user.getUser());
         return ResponseEntity.ok(CommonResponseUtil.success("예약 사용 처리 성공"));
     }
 }
