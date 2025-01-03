@@ -1,6 +1,6 @@
 package com.zerobase.zerostore.controller;
 
-import com.zerobase.zerostore.dto.CommonResponse;
+import com.zerobase.zerostore.dto.CommonResponseUtil;
 import com.zerobase.zerostore.dto.LoginRequestDto;
 import com.zerobase.zerostore.dto.UserRequestDto;
 import com.zerobase.zerostore.service.UserService;
@@ -21,18 +21,18 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto userRequestDto) {
         userService.registerUser(userRequestDto);
-        return ResponseEntity.ok(CommonResponse.success("회원가입 성공"));
+        return ResponseEntity.ok(CommonResponseUtil.success("회원가입 성공"));
     }
 
     @PostMapping("/{id}/partner")
     public ResponseEntity<?> applyForPartner(@PathVariable Long id) {
         userService.applyForPartner(id);
-        return ResponseEntity.ok(CommonResponse.success("파트너 전환 성공"));
+        return ResponseEntity.ok(CommonResponseUtil.success("파트너 전환 성공"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(CommonResponse.success("로그인 성공", userService.login(loginRequestDto)));
+        return ResponseEntity.ok(CommonResponseUtil.success("로그인 성공", userService.login(loginRequestDto)));
     }
 
 }

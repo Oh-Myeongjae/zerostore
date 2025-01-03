@@ -11,28 +11,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class CommonResponse<T> {
+public class CommonResponseUtil<T> {
     private int status;
     private String message;
     private T data;
 
-    public static <T> CommonResponse<T> success(String message, T data) {
-        return CommonResponse.<T>builder()
+    public static <T> CommonResponseUtil<T> success(String message, T data) {
+        return CommonResponseUtil.<T>builder()
                 .message(message)
                 .status(200)
                 .data(data)
                 .build();
     }
-    public static <T> CommonResponse<T> success(String message) {
-        return CommonResponse.<T>builder()
+    public static <T> CommonResponseUtil<T> success(String message) {
+        return CommonResponseUtil.<T>builder()
                 .message(message)
                 .status(200)
                 .data(null)
                 .build();
     }
 
-    public static <T> CommonResponse<T> error(int status,String message) {
-        return CommonResponse.<T>builder()
+    public static <T> CommonResponseUtil<T> error(int status, String message) {
+        return CommonResponseUtil.<T>builder()
                 .message(message)
                 .status(status)
                 .data(null)
