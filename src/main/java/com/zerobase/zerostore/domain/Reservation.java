@@ -1,5 +1,6 @@
 package com.zerobase.zerostore.domain;
 
+import com.zerobase.zerostore.exception.CustomException;
 import com.zerobase.zerostore.type.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static com.zerobase.zerostore.type.ErrorCode.RESERVATION_ALREADY_USED;
+import static com.zerobase.zerostore.type.ErrorCode.RESERVATION_NOT_APPROVED;
 
 @Entity
 @Builder
@@ -48,13 +52,14 @@ public class Reservation extends BaseEntity{
 
     // 사용 처리 상태 업데이트
     public void setUsed(boolean used) {
-        if (used && !Objects.equals(this.status, ReservationStatus.APPROVED.getStatus())) {
-            throw new IllegalStateException("승인된 예약만 사용 처리할 수 있습니다.");
+        if (this.used) {
+            throw new CustomException(RESERVATION_ALREADY_USED);
         }
-        if (this.used && used) {
-            throw new IllegalStateException("이미 사용 처리된 예약입니다.");
+        if (!Objects.equals(this.status, ReservationStatus.APPROVED.getStatus())) {
+            throw new CustomException(RESERVATION_NOT_APPROVED);
         }
         this.used = used;
+        this.status = ReservationStatus.COMPLETED.getStatus();
     }
 }
 
