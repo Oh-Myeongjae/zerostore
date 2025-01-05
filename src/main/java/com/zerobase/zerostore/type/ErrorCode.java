@@ -14,7 +14,8 @@ public enum ErrorCode {
     INVALID_ROLE(403, "PARTNER 권한이 필요합니다."),
     DUPLICATE_STORE_NAME(409, "이미 동일한 상호명이 등록되어 있습니다."),
     STORE_NOT_FOUND(404, "상점을 찾을 수 없습니다."),
-    INVALID_RESERVATION_TIME(400,"예약은 매 시간 정각 단위로만 가능합니다."),
+    INVALID_RESERVATION_TIME(400, "예약은 매 시간 정각과 30분 단위로만 가능합니다."),
+    RESERVATION_IN_PAST(400,"이미 지난 시간으로는 예약할 수 없습니다."),
 
     RESERVATION_NOT_FOUND(400, "예약을 찾을 수 없습니다."),
     UNAUTHORIZED_ACTION(403, "권한이 없습니다."),

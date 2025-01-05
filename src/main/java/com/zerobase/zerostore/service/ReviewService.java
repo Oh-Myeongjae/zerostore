@@ -48,12 +48,7 @@ public class ReviewService {
 
         reviewRepository.save(review);
 
-        return new ReviewResponse(
-                review.getStore().getName(),
-                review.getUser().getName(),
-                review.getContent(),
-                review.getRating()
-        );
+        return ReviewResponse.entityToDto(review);
     }
 
     // 리뷰 수정
@@ -88,24 +83,14 @@ public class ReviewService {
     // 상점별 리뷰 조회
     public List<ReviewResponse> getReviewsByStore(Long storeId) {
         return reviewRepository.findByStoreId(storeId).stream()
-                .map(review -> new ReviewResponse(
-                        review.getStore().getName(),
-                        review.getUser().getName(),
-                        review.getContent(),
-                        review.getRating()
-                ))
+                .map(ReviewResponse::entityToDto)
                 .collect(Collectors.toList());
     }
 
     // 사용자별 리뷰 조회
     public List<ReviewResponse> getReviewsByUser(User user) {
         return reviewRepository.findByUserId(user.getId()).stream()
-                .map(review -> new ReviewResponse(
-                        review.getStore().getName(),
-                        review.getUser().getName(),
-                        review.getContent(),
-                        review.getRating()
-                ))
+                .map(ReviewResponse::entityToDto)
                 .collect(Collectors.toList());
     }
 }

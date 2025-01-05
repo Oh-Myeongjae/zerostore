@@ -29,8 +29,16 @@ public class ReservationService {
     //예약 생성
     @Transactional
     public ReservationResponse createReservation(User user, ReservationRequest request) {
-        // 예약 시간 유효성 검증
-        if (request.getReservationTime().getMinute() != 0) {
+        LocalDateTime reservationTime = request.getReservationTime();
+
+        // 1. 과거 시간에 대한 예약 방지
+        if (reservationTime.isBefore(LocalDateTime.now())) {
+            throw new CustomException(RESERVATION_IN_PAST);
+        }
+
+        // 2. 예약 시간 유효성 검증 (30분 단위만 가능)
+        int minute = reservationTime.getMinute();
+        if (minute != 0 && minute != 30) {
             throw new CustomException(INVALID_RESERVATION_TIME);
         }
 
@@ -42,7 +50,7 @@ public class ReservationService {
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .store(store)
-                .reservationTime(request.getReservationTime())
+                .reservationTime(reservationTime)
                 .status(ReservationStatus.PENDING.getStatus())
                 .used(false)
                 .build();
