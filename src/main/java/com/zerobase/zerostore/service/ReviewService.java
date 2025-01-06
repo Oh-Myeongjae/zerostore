@@ -2,12 +2,15 @@ package com.zerobase.zerostore.service;
 
 import com.zerobase.zerostore.domain.Reservation;
 import com.zerobase.zerostore.domain.Review;
+import com.zerobase.zerostore.domain.Store;
 import com.zerobase.zerostore.domain.User;
 import com.zerobase.zerostore.dto.ReviewRequest;
 import com.zerobase.zerostore.dto.ReviewResponse;
 import com.zerobase.zerostore.exception.CustomException;
 import com.zerobase.zerostore.repository.ReservationRepository;
 import com.zerobase.zerostore.repository.ReviewRepository;
+import com.zerobase.zerostore.repository.StoreRepository;
+import com.zerobase.zerostore.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,8 @@ import static com.zerobase.zerostore.type.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
+    private final StoreRepository storeRepository;
 
     private final ReviewRepository reviewRepository;
     private final ReservationRepository reservationRepository;
@@ -82,7 +87,10 @@ public class ReviewService {
 
     // 상점별 리뷰 조회
     public List<ReviewResponse> getReviewsByStore(Long storeId) {
-        return reviewRepository.findByStoreId(storeId).stream()
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+        return reviewRepository.findByStoreId(store.getId()).stream()
                 .map(ReviewResponse::entityToDto)
                 .collect(Collectors.toList());
     }

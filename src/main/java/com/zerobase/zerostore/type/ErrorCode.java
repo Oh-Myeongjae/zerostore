@@ -16,11 +16,10 @@ public enum ErrorCode {
     STORE_NOT_FOUND(404, "상점을 찾을 수 없습니다."),
     INVALID_RESERVATION_TIME(400, "예약은 매 시간 정각과 30분 단위로만 가능합니다."),
     RESERVATION_IN_PAST(400,"이미 지난 시간으로는 예약할 수 없습니다."),
-
     RESERVATION_NOT_FOUND(400, "예약을 찾을 수 없습니다."),
     UNAUTHORIZED_ACTION(403, "권한이 없습니다."),
     DUPLICATE_RESERVATION(409, "이미 동일한 시간에 예약이 존재합니다."),
-
+    RESERVATION_STATE_CONFLICT(409,"승인된 예약은 대기 상태로 변경할 수 없습니다."),
     ACCESS_DENIED(403, "정보를 수정할 권한이 없습니다."),
     INVALID_INPUT_VALUE(422, "예약한 시간 10분 전부터 사용할 수 있습니다"),
     RESERVATION_ALREADY_USED(400,"이미 사용 처리된 예약입니다."),

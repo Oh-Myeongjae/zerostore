@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.zerobase.zerostore.type.ErrorCode.RESERVATION_ALREADY_USED;
-import static com.zerobase.zerostore.type.ErrorCode.RESERVATION_NOT_APPROVED;
+import static com.zerobase.zerostore.type.ErrorCode.*;
 
 @Entity
 @Builder
@@ -45,7 +44,7 @@ public class Reservation extends BaseEntity{
     // 예약 상태 업데이트
     public void setStatus(String status) {
         if (Objects.equals(this.status, ReservationStatus.APPROVED.getStatus()) && Objects.equals(status, ReservationStatus.PENDING.getStatus())) {
-            throw new IllegalStateException("승인된 예약은 대기 상태로 변경할 수 없습니다.");
+            throw new CustomException(RESERVATION_STATE_CONFLICT);
         }
         this.status = status;
     }
