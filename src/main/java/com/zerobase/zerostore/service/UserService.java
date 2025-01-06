@@ -1,9 +1,9 @@
 package com.zerobase.zerostore.service;
 
 import com.zerobase.zerostore.domain.User;
-import com.zerobase.zerostore.dto.LoginRequestDto;
-import com.zerobase.zerostore.dto.TokenResponseDto;
-import com.zerobase.zerostore.dto.UserRequestDto;
+import com.zerobase.zerostore.dto.LoginRequest;
+import com.zerobase.zerostore.dto.TokenResponse;
+import com.zerobase.zerostore.dto.UserRequest;
 import com.zerobase.zerostore.exception.CustomException;
 import com.zerobase.zerostore.repository.UserRepository;
 import com.zerobase.zerostore.security.JwtTokenProvider;
@@ -24,15 +24,15 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void registerUser(UserRequestDto userRequestDto) {
-        if (userRepository.existsByPhoneNumber(userRequestDto.getPhoneNumber())) {
+    public void registerUser(UserRequest userRequest) {
+        if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             throw new CustomException(USER_ALREADY_REGISTERED);
         }
 
         User user = User.builder()
-                .name(userRequestDto.getName())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))// 비밀번호 암호화
+                .name(userRequest.getName())
+                .phoneNumber(userRequest.getPhoneNumber())
+                .password(passwordEncoder.encode(userRequest.getPassword()))// 비밀번호 암호화
                 .role(Role.USER)// 기본 역할 설정
                 .build();
         userRepository.save(user);
@@ -46,15 +46,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public TokenResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByPhoneNumber(loginRequestDto.getPhoneNumber())
+    public TokenResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByPhoneNumber(loginRequest.getPhoneNumber())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new CustomException(INVALID_PASSWORD);
         }
 
-        return TokenResponseDto.builder()
+        return TokenResponse.builder()
                 .token(jwtTokenProvider.generateToken(user.getPhoneNumber()))
                 .build();
     }

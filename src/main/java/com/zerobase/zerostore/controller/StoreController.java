@@ -1,9 +1,9 @@
 package com.zerobase.zerostore.controller;
 
 import com.zerobase.zerostore.dto.CommonResponseUtil;
-import com.zerobase.zerostore.dto.StoreRequestDto;
-import com.zerobase.zerostore.dto.StoreResponseDto;
-import com.zerobase.zerostore.dto.StoreUpdateRequestDto;
+import com.zerobase.zerostore.dto.StoreRequest;
+import com.zerobase.zerostore.dto.StoreResponse;
+import com.zerobase.zerostore.dto.StoreUpdateRequest;
 import com.zerobase.zerostore.security.UserDetailsImpl;
 import com.zerobase.zerostore.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class StoreController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/register")
     public ResponseEntity<?> registerStore(
-            @RequestBody @Valid StoreRequestDto storeRequest,
+            @RequestBody @Valid StoreRequest storeRequest,
             @AuthenticationPrincipal UserDetailsImpl user
     ) {
         if (user == null) {
@@ -47,7 +47,7 @@ public class StoreController {
     public ResponseEntity<CommonResponseUtil<?>> updateStore(
             @PathVariable Long storeId,
             @AuthenticationPrincipal UserDetailsImpl user,
-            @RequestBody @Valid StoreUpdateRequestDto request
+            @RequestBody @Valid StoreUpdateRequest request
     ) {
         if (user == null) {
             return ResponseEntity.ok(CommonResponseUtil.error(403, "상점정보 수정을 위한 권한이 없습니다."));
@@ -73,14 +73,14 @@ public class StoreController {
     @Operation(summary = "전체 상점 조회", description = "등록된 모든 상점 정보를 조회합니다.")
     @GetMapping
     public ResponseEntity<CommonResponseUtil<?>> getAllStores() {
-        List<StoreResponseDto> stores = storeService.getAllStores();
+        List<StoreResponse> stores = storeService.getAllStores();
         return ResponseEntity.ok(CommonResponseUtil.success("전체 상점 조회 성공", stores));
     }
 
     @Operation(summary = "특정 상점 조회", description = "상점 ID를 기준으로 특정 상점 정보를 조회합니다.")
     @GetMapping("/{storeId}")
     public ResponseEntity<CommonResponseUtil<?>> getStoreById(@PathVariable Long storeId) {
-        StoreResponseDto store = storeService.getStoreById(storeId);
+        StoreResponse store = storeService.getStoreById(storeId);
         return ResponseEntity.ok(CommonResponseUtil.success("상점 조회 성공", store));
     }
 
@@ -88,7 +88,7 @@ public class StoreController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/owned")
     public ResponseEntity<CommonResponseUtil<?>> getStoresByOwner(@AuthenticationPrincipal UserDetailsImpl user) {
-        List<StoreResponseDto> stores = storeService.getStoresByOwner(user.getUser());
+        List<StoreResponse> stores = storeService.getStoresByOwner(user.getUser());
         return ResponseEntity.ok(CommonResponseUtil.success("파트너 상점 조회 성공", stores));
     }
 }

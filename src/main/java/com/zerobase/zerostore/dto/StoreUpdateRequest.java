@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreRequestDto {
+public class StoreUpdateRequest {
 
     @NotBlank(message = "매장 명은 필수입니다.")
     private String name;

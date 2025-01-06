@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreResponseDto {
+public class StoreResponse {
     private Long id;
     private String name;
     private String location;
     private String description;
 
-    public static StoreResponseDto entityToDto(Store store){
-        return StoreResponseDto.builder()
+    public static StoreResponse entityToDto(Store store){
+        return StoreResponse.builder()
                 .id(store.getId())
                 .name(store.getName())
                 .location(store.getLocation())
